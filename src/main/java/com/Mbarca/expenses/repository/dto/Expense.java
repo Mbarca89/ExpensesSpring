@@ -1,17 +1,18 @@
-package dao.dto;
+package com.Mbarca.expenses.repository.dto;
 
-import entities.ExpenseCategory;
 
-public class ExpenseDto {
+import com.Mbarca.expenses.domain.ExpenseCategory;
+
+public class Expense {
     private Integer id;
     private Double amount;
     private ExpenseCategory category;
     private String date;
 
-    public ExpenseDto() {
+    public Expense() {
     }
 
-    public ExpenseDto(Integer id, Double amount, ExpenseCategory category, String date) {
+    public Expense(Integer id, Double amount, ExpenseCategory category, String date) {
         this.id = id;
         this.amount = amount;
         this.category = category;

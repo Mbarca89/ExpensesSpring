@@ -1,13 +1,12 @@
-package dao;
+package com.Mbarca.expenses.repository;
 
-import dao.dto.ExpenseDto;
+import com.Mbarca.expenses.domain.Expense;
 
 import java.sql.ResultSet;
-import java.sql.SQLException;
 
-public interface ExpenseDao {
+public interface ExpenseRepository {
 
-    void createExpense(ExpenseDto expenseDto);
+    Integer createExpense(Expense expense);
     void getExpenses();
     ResultSet getExpenseById(int id);
     void updateExpense(int id, String newCategory, Double newAmount);
