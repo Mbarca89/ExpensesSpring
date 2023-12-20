@@ -1,6 +1,7 @@
 package com.Mbarca.expenses.domain;
 
 public class Expense {
+    private Long id;
     private Double amount;
     private String categoryName;
     private String date;
@@ -38,6 +39,12 @@ public class Expense {
         this.date = date;
     }
 
+    public Long getId() {
+        return id;
+    }
+    public void setId(Long id) {
+        this.id = id;
+    }
     @Override
     public String toString() {
         return "Expense{" +

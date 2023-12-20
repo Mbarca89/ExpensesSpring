@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.List;
 
 @Repository
 public class ExpenseRepositoryImpl implements ExpenseRepository {
@@ -17,6 +18,8 @@ public class ExpenseRepositoryImpl implements ExpenseRepository {
     private static final String CREATE_EXPENSE = "INSERT INTO Expense (amount, category_name, category_id, date) VALUES (?, ?, ?, ?)";
     private static final String CREATE_CATEGORY = "INSERT INTO ExpenseCategory (name) SELECT ? WHERE NOT EXISTS (SELECT 1 FROM ExpenseCategory WHERE name = ?)";
     private static final String GET_CATEGORY_BY_NAME = "SELECT * FROM ExpenseCategory WHERE name = ?";
+    private static final String GET_ALL_EXPENSES = "SELECT * FROM Expense";
+    private static final String DELETE_EXPENSE = "DELETE FROM Expense WHERE id = ?";
     private final JdbcTemplate jdbcTemplate;
 
     public ExpenseRepositoryImpl(JdbcTemplate jdbcTemplate) {
@@ -27,7 +30,7 @@ public class ExpenseRepositoryImpl implements ExpenseRepository {
     public Integer createExpense(Expense expense) {
         jdbcTemplate.update(CREATE_CATEGORY, expense.getCategoryName().toLowerCase(), expense.getCategoryName().toLowerCase());
 
-        Object[] params = {expense.getCategoryName()};
+        Object[] params = {expense.getCategoryName().toLowerCase()};
         int[] types = {1};
 
         ExpenseCategory expenseCategory = jdbcTemplate.queryForObject(
@@ -43,33 +46,9 @@ public class ExpenseRepositoryImpl implements ExpenseRepository {
         );
     }
 
-    static class ExpenseCategoryRowMapper implements RowMapper<ExpenseCategory>{
-        @Override
-        public ExpenseCategory mapRow(ResultSet rs, int rowNum) throws SQLException {
-            ExpenseCategory expenseCategory = new ExpenseCategory();
-            expenseCategory.setId(rs.getLong("id"));
-            expenseCategory.setName(rs.getString("name"));
-            return expenseCategory;
-        }
-    }
-
     @Override
-    public void getExpenses(){
-//        try{
-//            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM expense");
-//            ResultSet rs = preparedStatement.executeQuery();
-//            while (rs.next()){
-//                System.out.println("Gasto Nº " + rs.getInt("id"));
-//                System.out.println(("Monto: " + rs.getDouble("amount")));
-//                System.out.println("Categoria: " + rs.getString("category"));
-//                System.out.println("Fecha: " + rs.getString("date_added"));
-//                System.out.println("-----------------------------------------------------");
-//            }
-//            rs.close();
-//            preparedStatement.close();
-//        }catch (SQLException e) {
-//            throw new RuntimeException(e);
-//        }
+    public List<Expense> getAllExpenses(){
+        return jdbcTemplate.query(GET_ALL_EXPENSES, new ExpenseRowMapper());
     }
 
     @Override
@@ -107,23 +86,29 @@ public class ExpenseRepositoryImpl implements ExpenseRepository {
 //        }
     }
     @Override
-    public void deleteExpense(int id){
-//        try {
-//            PreparedStatement preparedStatement = connection.prepareStatement("DELETE expense WHERE id = ?");
-//            preparedStatement.setInt(1, id);
-//
-//            int filesAffected = preparedStatement.executeUpdate();
-//            if (filesAffected > 0){
-//                System.out.println("Eliminado correctamente!");
-//            } else {
-//                System.out.println("No se encontró el gasto con id " + id);
-//            }
-//
-//            preparedStatement.close();
-//        } catch (SQLException e) {
-//            System.out.println("Error al eliminar el registro: " + e.getMessage());
-//        }
-//
+    public Integer deleteExpense(Long id){
+        return jdbcTemplate.update(DELETE_EXPENSE, id);
+    }
 
+    static class ExpenseCategoryRowMapper implements RowMapper<ExpenseCategory>{
+        @Override
+        public ExpenseCategory mapRow(ResultSet rs, int rowNum) throws SQLException {
+            ExpenseCategory expenseCategory = new ExpenseCategory();
+            expenseCategory.setId(rs.getLong("id"));
+            expenseCategory.setName(rs.getString("name").toLowerCase());
+            return expenseCategory;
+        }
+    }
+
+    static class ExpenseRowMapper implements RowMapper<Expense>{
+        @Override
+        public Expense mapRow(ResultSet rs, int rowNum) throws SQLException{
+            Expense expense = new Expense();
+            expense.setId(rs.getLong("id"));
+            expense.setAmount(rs.getDouble("amount"));
+            expense.setDate(rs.getString("date"));
+            expense.setCategoryName(rs.getString("category_name"));
+            return expense;
+        }
     }
 }
