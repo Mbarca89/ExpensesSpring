@@ -1,5 +1,6 @@
 package com.Mbarca.expenses.repository.imp;
 
+import com.Mbarca.expenses.dto.response.ExpenseResponseDto;
 import com.Mbarca.expenses.repository.ExpenseRepository;
 import com.Mbarca.expenses.domain.Expense;
 import com.Mbarca.expenses.domain.ExpenseCategory;
@@ -19,6 +20,7 @@ public class ExpenseRepositoryImpl implements ExpenseRepository {
     private static final String CREATE_CATEGORY = "INSERT INTO ExpenseCategory (name) SELECT ? WHERE NOT EXISTS (SELECT 1 FROM ExpenseCategory WHERE name = ?)";
     private static final String GET_CATEGORY_BY_NAME = "SELECT * FROM ExpenseCategory WHERE name = ?";
     private static final String GET_ALL_EXPENSES = "SELECT * FROM Expense";
+    private static final String GET_EXPENSE_BY_ID = "SELECT * FROM Expense WHERE id = ?";
     private static final String DELETE_EXPENSE = "DELETE FROM Expense WHERE id = ?";
     private final JdbcTemplate jdbcTemplate;
 
@@ -52,17 +54,10 @@ public class ExpenseRepositoryImpl implements ExpenseRepository {
     }
 
     @Override
-    public ResultSet getExpenseById(int id){
-//        ResultSet rs;
-//        try{
-//            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM expense WHERE id = ?");
-//            preparedStatement.setInt(1,id);
-//            rs = preparedStatement.executeQuery();
-//        }catch (SQLException e) {
-//            throw new RuntimeException(e);
-//        }
-//        return rs;
-        return null;
+    public Expense getExpenseById(Long id){
+        Object[] params = {id};
+        int[] types = {1};
+        return jdbcTemplate.queryForObject(GET_EXPENSE_BY_ID, params, types,new ExpenseRowMapper());
     }
 
     @Override
