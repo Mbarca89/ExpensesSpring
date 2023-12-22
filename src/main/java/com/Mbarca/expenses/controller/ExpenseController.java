@@ -42,8 +42,8 @@ public class ExpenseController {
     }
 
     @GetMapping("/get/{id}")
-    public ResponseEntity<Expense> getExpenseById(@PathVariable String id){
-        Expense response;
+    public ResponseEntity<ExpenseResponseDto> getExpenseById(@PathVariable String id){
+        ExpenseResponseDto response;
         try {
             Long longId = Long.parseLong(id);
             response = expenseService.getExpenseById(longId);

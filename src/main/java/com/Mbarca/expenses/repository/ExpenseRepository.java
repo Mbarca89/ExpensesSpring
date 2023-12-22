@@ -13,4 +13,5 @@ public interface ExpenseRepository {
     Expense getExpenseById(Long id);
     void updateExpense(int id, String newCategory, Double newAmount);
     Integer deleteExpense (Long id);
+    void deleteAllExpensesInCategory (Long id);
 }

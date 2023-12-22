@@ -4,6 +4,7 @@ public class Expense {
     private Long id;
     private Double amount;
     private String categoryName;
+    private Long categoryId;
     private String date;
 
     public Expense() {
@@ -44,6 +45,13 @@ public class Expense {
     }
     public void setId(Long id) {
         this.id = id;
+    }
+    public Long getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
     }
     @Override
     public String toString() {

@@ -22,6 +22,7 @@ public class ExpenseRepositoryImpl implements ExpenseRepository {
     private static final String GET_ALL_EXPENSES = "SELECT * FROM Expense";
     private static final String GET_EXPENSE_BY_ID = "SELECT * FROM Expense WHERE id = ?";
     private static final String DELETE_EXPENSE = "DELETE FROM Expense WHERE id = ?";
+    private static final String DELETE_ALL_EXPENSES_IN_CATEGORY = "DELETE FROM Expense WHERE category_id = ?";
     private final JdbcTemplate jdbcTemplate;
 
     public ExpenseRepositoryImpl(JdbcTemplate jdbcTemplate) {
@@ -85,6 +86,11 @@ public class ExpenseRepositoryImpl implements ExpenseRepository {
         return jdbcTemplate.update(DELETE_EXPENSE, id);
     }
 
+    @Override
+    public void deleteAllExpensesInCategory(Long id){
+        jdbcTemplate.update(DELETE_ALL_EXPENSES_IN_CATEGORY, id);
+    }
+
     static class ExpenseCategoryRowMapper implements RowMapper<ExpenseCategory>{
         @Override
         public ExpenseCategory mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -103,6 +109,7 @@ public class ExpenseRepositoryImpl implements ExpenseRepository {
             expense.setAmount(rs.getDouble("amount"));
             expense.setDate(rs.getString("date"));
             expense.setCategoryName(rs.getString("category_name"));
+            expense.setCategoryId(rs.getLong("category_id"));
             return expense;
         }
     }

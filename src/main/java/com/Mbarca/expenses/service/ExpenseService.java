@@ -11,6 +11,7 @@ import java.util.List;
 public interface ExpenseService {
     String createExpense (ExpenseRequestDto expenseRequestDto) throws MissingDataException;
     List<ExpenseResponseDto> getAllExpenses ();
-    Expense getExpenseById(Long id);
+    ExpenseResponseDto getExpenseById(Long id);
     String deleteExpense (Long id);
+    void deleteAllExpensesInCategory (Long id);
 }

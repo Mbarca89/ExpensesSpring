@@ -51,8 +51,9 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
 
     @Override
-    public Expense getExpenseById(Long id) {
-        return expenseRepository.getExpenseById(id);
+    public ExpenseResponseDto getExpenseById(Long id) {
+        Expense expense = expenseRepository.getExpenseById(id);
+        return mapExpenseToExpenseResponseDto(expense);
     }
 
     @Override
@@ -62,6 +63,11 @@ public class ExpenseServiceImpl implements ExpenseService {
             return "Error al eliminar el gasto con id: " + id;
         }
         return "Gasto eliminado correctamente";
+    }
+
+    @Override
+    public void deleteAllExpensesInCategory (Long id){
+        expenseRepository.deleteAllExpensesInCategory(id);
     }
 
     private Expense mapDtoToExpense(ExpenseRequestDto expenseRequestDto) {
@@ -77,6 +83,7 @@ public class ExpenseServiceImpl implements ExpenseService {
         ExpenseCategoryResponseDto expenseCategoryResponseDto = new ExpenseCategoryResponseDto();
 
         expenseCategoryResponseDto.setName(expense.getCategoryName());
+        expenseCategoryResponseDto.setId(expense.getCategoryId());
 
         expenseResponseDto.setId(expense.getId());
         expenseResponseDto.setAmount(expense.getAmount());
